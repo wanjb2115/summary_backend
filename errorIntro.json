@@ -1,0 +1,25 @@
+{
+
+"IMGSRV  ": "0: GetPTLAFormat: Invalid format",
+
+"ViewRootImpl": "'sendUserActionEvent() mView == null",
+
+"chromium":"external/chromium/net/disk_cache/stat_hub.cc:216:[1210/153446:ERROR:stat_hub.cc(216)] StatHub::Init - App com.example.myfristandroid isn't supported. or [ERROR:gles2_cmd_decoder.cc(1953)][.GpuRasterization]GLERROR :GL_INVALID_OPERATION : GLES2DecoderImpl::DoWillUseTexImageIfNeeded: <- error from previous GL command",
+
+"Web Console":"Uncaught TypeError: Object com.example.myfristandroid.graphWebShow$DemoJavaScriptInterface@4314d1e0 has no method 'startWait' at http://oa.paneng.cn:1143/se9200/realdata/js/realdata.js:80",
+
+"dalvikvm": "GC_CONCURRENT freed 4240K, 26% free 18871K/25479K, paused 2ms+3ms, total 38ms. or threadid=15: created from interp,name=Thread-2375.",
+
+"ion     ": "ioctl c0044901 failed with code -1: Invalid argument",
+
+"webcoreglue":"getAbsoluteBoundingBox failed",
+
+"Diag_Lib": " Diag_LSM_Init: Failed to open handle to diag driver, error = 13",
+
+"external/chromium/net/host_resolver_helper/dyn_lib_loader.cc": "netstack: LIB_MGR - Error loading lib qnet-plugin.so",
+
+"        ": "netstack: STAT_HUB - Failed to load plugin: libdnshostprio.so",
+
+"ZoomManager.java": "wlf reflowText=true"
+
+}
