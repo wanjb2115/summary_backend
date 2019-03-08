@@ -353,7 +353,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     timeArray = time.localtime(translate_refer[tr][-1]['SyscTime'] / 1000)
                     end_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
                     className = re.findall('ClassName:(.+?);', translate_refer[tr][0]['Action'])[0]
-                    report_high_risk += '                    ' + start_formatTime + ' - ' + end_formatTime + str(
+                    report_high_risk += '    ' + start_formatTime + ' - ' + end_formatTime + str(
                         len(translate_refer[tr])) + 'times of ' + android_event_type[translate_refer[tr][0][
                         'EventType']] + "Related action class name is" + className + '.\n'
                 elif refer_length >= 4:
