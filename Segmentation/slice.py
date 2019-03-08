@@ -99,7 +99,7 @@ android_event_class_type = {
 def sliceEvent(file_dir):
     event_sequence_by_time = []
 
-    with open('../1-Preprocessing/output/' + file_dir + '/event.json') as f:
+    with open('Preprocessing/output/' + file_dir + '/event.json') as f:
         event_list = json.load(f)
     event_little_sequence_by_time = []
     for i in range(len(event_list) - 1):

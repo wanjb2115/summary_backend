@@ -2,10 +2,10 @@ import json
 import re
 import Levenshtein
 
-with open('../3-Cluster/errorHub.json') as f:
+with open('Cluster/errorHub.json') as f:
     errorhub = json.load(f)
 
-with open('../3-Cluster/errorIntro.json') as f:
+with open('Cluster/errorIntro.json') as f:
     errorIntro = json.load(f)
 
 
