@@ -6,10 +6,10 @@ import re
 import Levenshtein
 import time
 
-with open('errorHub.json') as f:
+with open('3-Cluster/errorHub.json') as f:
     errorhub = json.load(f)
 
-with open('errorIntro.json') as f:
+with open('3-Cluster/errorIntro.json') as f:
     errorIntro = json.load(f)
 
 
@@ -154,13 +154,13 @@ api = Api(app)
 
 class GetFileNames(Resource):
     def get(self, file_dir):
-        result = os.listdir('data/' + file_dir)
+        result = os.listdir('1-Preprocessing/' + file_dir)
         return {'fileNames': result}
 
 
 class GetFileContent(Resource):
     def get(self, file_dir):
-        file_dir = 'data/' + file_dir
+        file_dir = '1-Preprocessing/' + file_dir
         with open(file_dir) as f:
             return {'fileContent': f.read()}
 
@@ -169,7 +169,7 @@ class SliceEvent(Resource):
     def get(self, file_dir):
         event_sequence_by_time = []
 
-        with open('data/data_process/output/' + file_dir + '/event.json') as f:
+        with open('1-Preprocessing/output/' + file_dir + '/event.json') as f:
             event_list = json.load(f)
         event_little_sequence_by_time = []
         for i in range(len(event_list) - 1):
@@ -218,7 +218,7 @@ class SliceEvent(Resource):
 
 class Translate(Resource):
     def get(self, file_dir):
-        with open('data/data_process/output/' + file_dir + '/event.json') as f:
+        with open('1-Preprocessing/output/' + file_dir + '/event.json') as f:
             event_list = json.load(f)
         slice_event = SliceEvent().get(file_dir)['data']
 

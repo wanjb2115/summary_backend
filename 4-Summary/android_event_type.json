@@ -1,0 +1,19 @@
+{
+  "android_event_type": {
+    "TYPE_WINDOW_STATE_CHANGED": " A change to a visually distinct section of the user interface.",
+    "TYPE_WINDOW_CONTENT_CHANGED": " Changing the content of a window.",
+    "TYPE_VIEW_FOCUSED": " Setting input focus of a View.",
+    "TYPE_VIEW_SCROLLED": " Scrolling a view.",
+    "TYPE_VIEW_CLICKED": " Clicking on a View like Button, CompoundButton, etc.",
+    "TYPE_VIEW_TEXT_SELECTION_CHANGED": " Changing the selection in an EditText.",
+    "TYPE_VIEW_ACCESSIBILITY_FOCUSED": " Gaining accessibility focus.",
+    "TYPE_VIEW_TEXT_CHANGED": " Changing the text of an EditText.",
+    "TYPE_VIEW_SELECTED": " Selecting an item usually in the context of an AdapterView.",
+    "TYPE_NOTIFICATION_STATE_CHANGED": "Showing a Notification.",
+    "TYPE_ANNOUNCEMENT": " An application making an announcement.",
+    "TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED": " Clearing accessibility focus.",
+    "TYPE_VIEW_LONG_CLICKED": " Long clicking on a View like Button, CompoundButton, etc.",
+    "TYPE_VIEW_HOVER_ENTER": " A hover enter over a View.",
+    "TYPE_VIEW_HOVER_EXIT": " A hover exit over a View."
+  }
+}

@@ -1,0 +1,32 @@
+{
+    "OutBounds": "Rect(0, 0 - 720, 1280)",//区域，左，上， 右，下
+    "PackageName": "com.example.myfristandroid",//应用包名称
+    "MovementGranularity": "0",//运动粒度
+    "EventType": "TYPE_WINDOW_STATE_CHANGED",//事件类型
+    "SyscTime": 1449718530994,//系统时间（绝对时间）
+    "EventTime": "6837261",//事件时间（相对时间）
+    "recordCount": "0",//记录次数
+    "Action":
+     "[
+            ClassName: com.example.myfristandroid.MainActivity;//相关类名
+            Text: [SE-1800\\xe7\\xa7\\xbb\\xe5\\x8a\\xa8APP];//日志文字
+            ContentDescription: null;//内容说明
+            ItemCount: -1;//此属性指定布局编辑器应在“预览”窗口中呈现的项目数。
+            CurrentItemIndex: -1;//当前部件显示的数组位置
+            IsEnabled: true;//是否是可以
+            IsPassword: false;//是否是密码
+            IsChecked: false;//是否可选
+            IsFullScreen: true;//是否全屏
+            Scrollable: false;//是否可滚动
+            BeforeText: null;//提前出现的文字
+            FromIndex: -1;
+            ToIndex: -1;
+            ScrollX: -1;
+            ScrollY: -1;
+            MaxScrollX: -1;
+            MaxScrollY: -1;
+            AddedCount: -1;
+            RemovedCount: -1;
+            ParcelableData: null
+       ]"
+},
