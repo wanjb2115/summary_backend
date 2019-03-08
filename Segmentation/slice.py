@@ -1,6 +1,5 @@
 import json
 import re
-import Levenshtein
 
 android_event_type = {
     'TYPE_WINDOW_STATE_CHANGED': [],
@@ -96,98 +95,52 @@ android_event_class_type = {
     'android.widget.Image': 'm'
 }
 
-with open('errorHub.json') as f:
-    errorhub = json.load(f)
 
-with open('errorIntro.json') as f:
-    errorIntro = json.load(f)
+def sliceEvent(file_dir):
+    event_sequence_by_time = []
 
-
-def bugTest(eventsequence):
-    error_words = ''
-    error_list = []
-    for e in eventsequence:
-        error_words += e['PackageName'] + ' ' + e['EventType'] + ' ' + \
-                       re.findall(' ClassName: (.+?); ', e['Action'])[0]
-        try:
-            text = re.findall(' Text: \[(.+)\]; ', e['Action'])[0]
-            error_words += text
-        except IndexError:
-            error_words += ' '
-            pass
-    for e in errorhub:
-        for key, value in e.items():
-            for little in value:
-                for l in little:
-                    e_words = ''
-                    for e in l[0]:
-                        e_words += e['PackageName'] + ' ' + e['EventType'] + ' ' + \
-                                   re.findall(' ClassName: (.+?); ', e['Action'])[0]
-                        try:
-                            text = re.findall(' Text: \[(.+)\]; ', e['Action'])[0]
-                            e_words += text
-                        except IndexError:
-                            e_words += ' '
-                            pass
-
-                    sim = Levenshtein.ratio(e_words, error_words)
-                    if sim > 0.98:
-                        error_list.append([sim, key, l[0], l[1]])
-    error_list = sorted(error_list, key=lambda x: x[0], reverse=True)
-    if len(error_list) >= 1:
-        return error_list[0]
-    else:
-        return None
-
-
-r = 0
-logcat = []
-event = []
-
-event_sequence_by_time = []
-
-# for file_name in file_list:
-with open('com.example.myfristandroid/' + file_name + '/event.json') as f:
-    event_list = json.load(f)
-event_little_sequence_by_time = []
-for i in range(len(event_list) - 1):
-    tim = event_list[i + 1]['SyscTime'] - event_list[i]['SyscTime']
-    if tim < 10000:
-        event_little_sequence_by_time.append(event_list[i])
-    else:
-        event_little_sequence_by_time.append(event_list[i])
-        event_sequence_by_time.append(event_little_sequence_by_time)
-        event_little_sequence_by_time = []
-        continue
-event_little_sequence_by_time.append(event_list[len(event_list) - 1])
-event_sequence_by_time.append(event_little_sequence_by_time)
-event_sequence_all = []
-
-for event_sequence_by_time_list in event_sequence_by_time:
-    if len(event_sequence_by_time_list) >= 3:
-        event_sequence = []
-        for e in event_sequence_by_time_list:
-            try:
-                action_class = re.findall("ClassName: (.+?);", e['Action'])[0]
-                event_sequence.append(
-                    [android_event_type_value[e['EventType']] + android_event_class_type[action_class], e])
-            except TypeError:
-                print(e)
-            except KeyError:
-                event_sequence.append([android_event_type_value[e['EventType']] + '0', e])
-        event_sequence_all.append(event_sequence)
-
-parsedDat = event_sequence_all
-
-littleList = []
-for middleDat in [x for x in parsedDat]:
-    littleList_item = []
-    for i in range(0, len(middleDat)):
-        if middleDat[i][0] == '02':
-            littleList.append(littleList_item)
-            littleList_item = []
-            littleList_item.append(middleDat[i][1])
+    with open('../1-Preprocessing/output/' + file_dir + '/event.json') as f:
+        event_list = json.load(f)
+    event_little_sequence_by_time = []
+    for i in range(len(event_list) - 1):
+        tim = event_list[i + 1]['SyscTime'] - event_list[i]['SyscTime']
+        if tim < 10000:
+            event_little_sequence_by_time.append(event_list[i])
         else:
-            littleList_item.append(middleDat[i][1])
+            event_little_sequence_by_time.append(event_list[i])
+            event_sequence_by_time.append(event_little_sequence_by_time)
+            event_little_sequence_by_time = []
+            continue
+    event_little_sequence_by_time.append(event_list[len(event_list) - 1])
+    event_sequence_by_time.append(event_little_sequence_by_time)
+    event_sequence_all = []
 
-slice_event = [x for x in littleList if len(x) >= 2 and len(x) <= 38]
+    for event_sequence_by_time_list in event_sequence_by_time:
+        if len(event_sequence_by_time_list) >= 3:
+            event_sequence = []
+            for e in event_sequence_by_time_list:
+                try:
+                    action_class = re.findall("ClassName: (.+?);", e['Action'])[0]
+                    event_sequence.append(
+                        [android_event_type_value[e['EventType']] + android_event_class_type[action_class], e])
+                except TypeError:
+                    print(e)
+                except KeyError:
+                    event_sequence.append([android_event_type_value[e['EventType']] + '0', e])
+            event_sequence_all.append(event_sequence)
+
+    parsedDat = event_sequence_all
+
+    littleList = []
+    for middleDat in [x for x in parsedDat]:
+        littleList_item = []
+        for i in range(0, len(middleDat)):
+            if middleDat[i][0] == '02':
+                littleList.append(littleList_item)
+                littleList_item = []
+                littleList_item.append(middleDat[i][1])
+            else:
+                littleList_item.append(middleDat[i][1])
+
+    slice_event = [x for x in littleList if len(x) >= 2 and len(x) <= 38]
+    return {'data': slice_event}

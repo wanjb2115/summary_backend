@@ -1,5 +1,5 @@
 .idea
 venv
-1-Preprocessing/
+Preprocessing/
 *.pyc
 .DS_Store
