@@ -126,7 +126,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
             The following is detailed summary of the segmented event sequence. 
         Test report：
             '''
-    person_name = file_name
+    person_name = re.findall('\d+_\d+',file_name)[0]
     software_name = event_list[0]['PackageName']
     test_time = str((event_list[-1]['SyscTime'] - event_list[0]['SyscTime']) / 1000)
     event_count = str(len(event_list))
