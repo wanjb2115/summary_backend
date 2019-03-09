@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Resource, Api
 import os
+import json
 
 from Segmentation.slice import sliceEvent
 from Translate.Translate import translate
@@ -23,6 +24,11 @@ class GetFileContent(Resource):
         with open(file_dir) as f:
             return {'fileContent': f.read()}
 
+class GetRemoveList(Resource):
+    def get(self):
+        with open('Preprocessing/remove.json') as f:
+            return json.load(f)
+
 
 class SliceEvent(Resource):
     def get(self, file_dir):
@@ -36,6 +42,7 @@ class Translate(Resource):
 
 api.add_resource(GetFileNames, '/GetFileNames/<path:file_dir>')
 api.add_resource(GetFileContent, '/GetFileContent/<path:file_dir>')
+api.add_resource(GetRemoveList, '/GetRemoveList/')
 api.add_resource(SliceEvent, '/SliceEvent/<path:file_dir>')
 api.add_resource(Translate, '/Translate/<path:file_dir>')
 
