@@ -621,7 +621,9 @@ def translate(file_name):
         event_list = json.load(f)
     with open('Preprocessing/output/' + file_name + '/logcat.json') as f:
         logcat_list = json.load(f)
-    return goTranslate(file_name, event_list, sliceEvent(event_list), logcat_list)
+    slice_event = sliceEvent(event_list)
+    if len(slice_event) > 0:
+        return goTranslate(file_name, event_list, slice_event, logcat_list)
 
     # highRiskEventTranslate(slice_event)
 

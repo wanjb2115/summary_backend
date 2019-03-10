@@ -57,7 +57,10 @@ android_event_class_type = {
     'android.webkit.WebView': 'j',
     'com.example.myfristandroid.SplashActivity': 'k',
     'org.chromium.content.browser.ContentViewCore': 'l',
-    'android.widget.Image': 'm'
+    'android.widget.Image': 'm',
+    'android.widget.Toast$TN':'n',
+    'android.widget.NumberPicker':'o',
+    'android.widget.DatePicker':'p',
 }
 
 
