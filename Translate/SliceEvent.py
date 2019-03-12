@@ -91,15 +91,20 @@ def sliceEvent(event_list):
                     event_sequence.append([android_event_type_value[e['EventType']] + '0', e])
             event_sequence_all.append(event_sequence)
     parsedDat = event_sequence_all
+    parsedDat = event_sequence_all
+
     littleList = []
+
     for middleDat in [x for x in parsedDat]:
         littleList_item = []
         for i in range(0, len(middleDat)):
             if middleDat[i][0] == '02':
-                littleList.append(littleList_item)
+                if len(littleList_item) != 0:
+                    littleList.append(littleList_item)
                 littleList_item = []
                 littleList_item.append(middleDat[i][1])
             else:
-                littleList_item.append(middleDat[i][1])
+                if len(littleList_item) != 0:
+                    littleList_item.append(middleDat[i][1])
 
     return [x for x in littleList if len(x) >= 2 and len(x) <= 38]

@@ -243,7 +243,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     end_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
                     className = re.findall('ClassName:(.+?);', translate_refer[tr][0]['Action'])[0]
                     report_confirmed += '    ' + start_formatTime + ' - ' + end_formatTime +' '+ str(
-                        len(translate_refer[tr])) + 'times of' + android_event_type[translate_refer[tr][0][
+                        len(translate_refer[tr])) + ' times of' + android_event_type[translate_refer[tr][0][
                         'EventType']] + "Related action class name is" + className + '.\n'
                 elif refer_length >= 4:
                     timeArray = time.localtime(translate_refer[tr][0]['SyscTime'] / 1000)
@@ -252,7 +252,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     end_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
                     className = re.findall('ClassName:(.+?);', translate_refer[tr][0]['Action'])[0]
                     report_confirmed += 'Suspect bug!        ' + start_formatTime + ' - ' + end_formatTime +' '+ str(
-                        len(translate_refer[tr])) + 'times of' + android_event_type[translate_refer[tr][0][
+                        len(translate_refer[tr])) + ' times of' + android_event_type[translate_refer[tr][0][
                         'EventType']] + "Related action class name is" + className + '.\n'
             if complete == 1:
                 report_confirmed += 'Confirmed bug!  -----Confirmed bug logcat information:\n'
@@ -273,7 +273,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                         logcat_error_log[e]['time'][0] / 1000)) + '-' + time.strftime("%Y/%m/%d %H:%M:%S",
                                                                                       time.localtime(
                                                                                           logcat_error_log[e]['time'][
-                                                                                              -1] / 1000)) + 'The logcat throw ' + str(
+                                                                                              -1] / 1000)) + ' The logcat throw ' + str(
                         len(logcat_error_log[e]['time'])) + ' ERROR logs continuous of ' + logcat_error_log[e][
                                             'tag'] + '.And the message is' + e + '\n'
             report_confirmed += ' \n'
@@ -354,7 +354,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     end_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
                     className = re.findall('ClassName:(.+?);', translate_refer[tr][0]['Action'])[0]
                     report_high_risk += '    ' + start_formatTime + ' - ' + end_formatTime +' '+ str(
-                        len(translate_refer[tr])) + 'times of ' + android_event_type[translate_refer[tr][0][
+                        len(translate_refer[tr])) + ' times of ' + android_event_type[translate_refer[tr][0][
                         'EventType']] + "Related action class name is" + className + '.\n'
                 elif refer_length >= 4:
                     timeArray = time.localtime(translate_refer[tr][0]['SyscTime'] / 1000)
@@ -363,7 +363,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     end_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
                     className = re.findall('ClassName:(.+?);', translate_refer[tr][0]['Action'])[0]
                     report_high_risk += 'Suspect bug!  ' + start_formatTime + ' - ' + end_formatTime+' ' +str(
-                        len(translate_refer[tr])) + 'times of ' + android_event_type[translate_refer[tr][0][
+                        len(translate_refer[tr])) + ' times of ' + android_event_type[translate_refer[tr][0][
                         'EventType']] + "Related action class name is" + className + '.\n'
             report_high_risk += ' \n'
             num += 1
@@ -439,7 +439,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     end_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
                     className = re.findall('ClassName:(.+?);', translate_refer[tr][0]['Action'])[0]
                     report_suspected_repeat += '    ' + start_formatTime + ' - ' + end_formatTime +' '+ str(
-                        len(translate_refer[tr])) + 'times of' + android_event_type[translate_refer[tr][0][
+                        len(translate_refer[tr])) + ' times of' + android_event_type[translate_refer[tr][0][
                         'EventType']] + "Related action class name is" + className + '.\n'
                 elif refer_length >= 4:
                     timeArray = time.localtime(translate_refer[tr][0]['SyscTime'] / 1000)
@@ -448,7 +448,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     end_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
                     className = re.findall('ClassName:(.+?);', translate_refer[tr][0]['Action'])[0]
                     report_suspected_repeat += 'Suspect bug!  ' + start_formatTime + ' - ' + end_formatTime +' '+ str(
-                        len(translate_refer[tr])) + 'times of ' + android_event_type[translate_refer[tr][0][
+                        len(translate_refer[tr])) + ' times of ' + android_event_type[translate_refer[tr][0][
                         'EventType']] + "Related action class name is" + className + '.\n'
             report_suspected_repeat += ' \n'
             num += 1
@@ -543,7 +543,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                         end_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
                         className = re.findall('ClassName:(.+?);', translate_refer_center[tr][0]['Action'])[0]
                         center_report += '    ' + start_formatTime + ' - ' + end_formatTime + ' ' + str(
-                            len(translate_refer_center[tr])) + ' times of' + android_event_type[
+                            len(translate_refer_center[tr])) + '  times of' + android_event_type[
                                              translate_refer_center[tr][0][
                                                  'EventType']] + " Related action class name is" + className + '.\n'
                     elif refer_length >= 4:
@@ -553,7 +553,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                         end_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
                         className = re.findall('ClassName:(.+?);', translate_refer_center[tr][0]['Action'])[0]
                         center_report += 'Suspect bug!        ' + start_formatTime + ' - ' + end_formatTime + ' ' + str(
-                            len(translate_refer_center[tr])) + 'times of' + android_event_type[
+                            len(translate_refer_center[tr])) + ' times of' + android_event_type[
                                              translate_refer_center[tr][0][
                                                  'EventType']] + "Related action class name is" + className + '.\n'
                 report_suspected_event += pre_report
