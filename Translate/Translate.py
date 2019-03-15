@@ -228,7 +228,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     else:
                         Text = ''
 
-                    report_confirmed += '    ' + formatTime + ' ' + process_OutBounds(outBounds) + \
+                    report_confirmed += '    ' + formatTime + ' ' + process_OutBounds(outBounds) +', '+  \
                                         android_event_type[e[
                                             'EventType']] + "Related action class name is " + className + '.' + Text + '\n'
                 elif refer_length < 4:
@@ -339,7 +339,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     else:
                         Text = ''
 
-                    report_high_risk += '    ' + formatTime+' ' + process_OutBounds(outBounds) + \
+                    report_high_risk += '    ' + formatTime+' ' + process_OutBounds(outBounds) +', '+  \
                                         android_event_type[e[
                                             'EventType']] + "Related action class name is " + className + '.' + Text + '\n'
                 elif refer_length < 4:
@@ -424,7 +424,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     else:
                         Text = ''
 
-                    report_suspected_repeat += '    ' + formatTime+' ' + process_OutBounds(outBounds) + \
+                    report_suspected_repeat += '    ' + formatTime+' ' + process_OutBounds(outBounds) +', '+  \
                                                android_event_type[e[
                                                    'EventType']] + "Related action class name is " + className + '.' + Text + '\n'
                 elif refer_length < 4:
@@ -529,7 +529,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                         else:
                             Text = ''
 
-                        center_report += '    ' + formatTime+' ' + process_OutBounds(outBounds) + \
+                        center_report += '    ' + formatTime+' ' + process_OutBounds(outBounds) +', '+  \
                                          android_event_type[e[
                                              'EventType']] + "Related action class name is " + className + '.' + Text + '\n'
                     elif refer_length < 4:
