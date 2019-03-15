@@ -91,7 +91,6 @@ def sliceEvent(event_list):
                     event_sequence.append([android_event_type_value[e['EventType']] + '0', e])
             event_sequence_all.append(event_sequence)
     parsedDat = event_sequence_all
-    parsedDat = event_sequence_all
 
     littleList = []
 

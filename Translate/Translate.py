@@ -504,6 +504,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                 if len(after_high_risk) > 0:
                     after_report = highSummary(sequence_after)
                 translate_refer_center = copy.deepcopy(in_high_risk)
+                n += sum([len(x) for x in pre_high_risk]) - 1
                 for tr in range(len(translate_refer_center)):
                     refer_length = len(translate_refer_center[tr])
                     for i in range(refer_length):
