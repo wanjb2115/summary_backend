@@ -1,6 +1,4 @@
-import os
 import time
-import json
 import copy
 from .FindBugByCluster import *
 from .FindBugBySummary import *
@@ -56,13 +54,10 @@ def process_OutBounds(OutBounds):
 
 
 def highRiskEventTranslate(slice):
-    error_important = {}
     with open('Summary/error_summary_hub.json') as f:
         error_high_event = json.load(f)
     error_high = error_high_event[0]
 
-    # error_middle = error_high_event[1]
-    # error_ignore = error_high_event[2]
     error_hub = []
 
     for error_key in error_high:
@@ -81,7 +76,7 @@ def highRiskEventTranslate(slice):
                 count = 0
             if len(count_list) > 0:
                 count_max = max(count_list)
-                if count_max >= 0.6:
+                if count_max >= 0.75:
                     error_hub.append([slice, count_list.index(count_max), error_length, error_key, count_max])
     if len(error_hub) != 0:
         error_hub = sorted(error_hub, key=lambda x: x[3])
@@ -104,7 +99,7 @@ def highSummary(sequence):
         className = re.findall('ClassName:(.+?);', e['Action'])[0]
         if className not in all_class_name:
             all_class_name.append(className)
-    report += '    During ' + start_formatTime + ' to ' + end_formatTime + ', the user play some actions like'
+    report += '    During ' + start_formatTime + ' to ' + end_formatTime + ', the user made some actions like'
 
     for t in [android_event_type[x] for x in all_event_type]:
         report += t + ' '
@@ -181,7 +176,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
         if len(refer_repeat) > 1:
             for p in refer_repeat[1:]:
                 repeat += '( Sequence ' + str(p + 1)
-            repeat += ' include the same test actions.)'
+            repeat += ' contains the same test actions.)'
         translate_refer = refer[r]
         bugfind = findBugByCluster(sequence)
         complete = 0
@@ -201,7 +196,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
             report_confirmed += '    ii.End Time： ' + time.strftime("%Y/%m/%d %H:%M:%S",
                                                                                 time.localtime(sequence[-1][
                                                                                                    'SyscTime'] / 1000)) + '\n'
-            report_confirmed += '    iii.Description Classmark：Confirmed bug!\n'
+            report_confirmed += '    iii.Category：Confirmed bug!\n'
             report_confirmed += '    iv.Detailed description：\n'
             n = 0
             for tr in range(len(translate_refer)):
@@ -235,7 +230,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
 
                     report_confirmed += '    ' + formatTime + ' ' + process_OutBounds(outBounds) + \
                                         android_event_type[e[
-                                            'EventType']] + "Related action class name is" + className + '.' + Text + '\n'
+                                            'EventType']] + "Related action class name is " + className + '.' + Text + '\n'
                 elif refer_length < 4:
                     timeArray = time.localtime(translate_refer[tr][0]['SyscTime'] / 1000)
                     start_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
@@ -244,7 +239,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     className = re.findall('ClassName:(.+?);', translate_refer[tr][0]['Action'])[0]
                     report_confirmed += '    ' + start_formatTime + ' - ' + end_formatTime +' '+ str(
                         len(translate_refer[tr])) + ' times of' + android_event_type[translate_refer[tr][0][
-                        'EventType']] + "Related action class name is" + className + '.\n'
+                        'EventType']] + "Related action class name is " + className + '.\n'
                 elif refer_length >= 4:
                     timeArray = time.localtime(translate_refer[tr][0]['SyscTime'] / 1000)
                     start_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
@@ -253,7 +248,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     className = re.findall('ClassName:(.+?);', translate_refer[tr][0]['Action'])[0]
                     report_confirmed += 'Suspect bug!        ' + start_formatTime + ' - ' + end_formatTime +' '+ str(
                         len(translate_refer[tr])) + ' times of' + android_event_type[translate_refer[tr][0][
-                        'EventType']] + "Related action class name is" + className + '.\n'
+                        'EventType']] + "Related action class name is " + className + '.\n'
             if complete == 1:
                 report_confirmed += 'Confirmed bug!  -----Confirmed bug logcat information:\n'
                 start_time = sequence[0]['SyscTime']
@@ -287,7 +282,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
         if len(refer_repeat) > 1:
             for p in refer_repeat[1:]:
                 repeat += '( Sequence ' + str(p + 1)
-            repeat += ' include the same test actions.)'
+            repeat += ' contains the same test actions.)'
         translate_refer = refer[r]
         bugfind = findBugByCluster(sequence)
         high_risk = 0
@@ -307,7 +302,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
             report_high_risk += '    ii.End Time： ' + time.strftime("%Y/%m/%d %H:%M:%S",
                                                                                 time.localtime(sequence[-1][
                                                                                                    'SyscTime'] / 1000)) + '\n'
-            report_high_risk += '    iii.Description Classmark：High-risk bug!\n'
+            report_high_risk += '    iii.Category：High-risk bug!\n'
             if high_risk != 0:
                 report_high_risk += '%.2f' % (float(bugfind[
                                                         0]) * 100) + '% bug!    The bug message might be:' + errorText + '.The accuracy is ' + "%.4f" % float(
@@ -346,7 +341,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
 
                     report_high_risk += '    ' + formatTime+' ' + process_OutBounds(outBounds) + \
                                         android_event_type[e[
-                                            'EventType']] + "Related action class name is" + className + '.' + Text + '\n'
+                                            'EventType']] + "Related action class name is " + className + '.' + Text + '\n'
                 elif refer_length < 4:
                     timeArray = time.localtime(translate_refer[tr][0]['SyscTime'] / 1000)
                     start_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
@@ -355,7 +350,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     className = re.findall('ClassName:(.+?);', translate_refer[tr][0]['Action'])[0]
                     report_high_risk += '    ' + start_formatTime + ' - ' + end_formatTime +' '+ str(
                         len(translate_refer[tr])) + ' times of ' + android_event_type[translate_refer[tr][0][
-                        'EventType']] + "Related action class name is" + className + '.\n'
+                        'EventType']] + "Related action class name is " + className + '.\n'
                 elif refer_length >= 4:
                     timeArray = time.localtime(translate_refer[tr][0]['SyscTime'] / 1000)
                     start_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
@@ -364,7 +359,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     className = re.findall('ClassName:(.+?);', translate_refer[tr][0]['Action'])[0]
                     report_high_risk += 'Suspect bug!  ' + start_formatTime + ' - ' + end_formatTime+' ' +str(
                         len(translate_refer[tr])) + ' times of ' + android_event_type[translate_refer[tr][0][
-                        'EventType']] + "Related action class name is" + className + '.\n'
+                        'EventType']] + "Related action class name is " + className + '.\n'
             report_high_risk += ' \n'
             num += 1
     # if suspected_whole != 0:
@@ -376,7 +371,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
         if len(refer_repeat) > 1:
             for p in refer_repeat[1:]:
                 repeat += '( Sequence ' + str(p + 1)
-            repeat += ' include the same test actions.)'
+            repeat += ' contains the same test actions.)'
         translate_refer = refer[r]
         bugfind = findBugByCluster(sequence)
         high_risk = 0
@@ -392,7 +387,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
             report_suspected_repeat += '    ii.End Time： ' + time.strftime("%Y/%m/%d %H:%M:%S",
                                                                                        time.localtime(sequence[-1][
                                                                                                           'SyscTime'] / 1000)) + '\n'
-            report_suspected_repeat += '    iii.Description Classmark：Suspected bug!' + '\n'
+            report_suspected_repeat += '    iii.Category：Suspected bug!' + '\n'
             if high_risk != 0:
                 report_suspected_repeat += '%.2f' % (float(bugfind[
                                                                0]) * 100) + '% bug!    The bug message might be: ' + errorText + '.The accuracy is ' + "%.4f" % float(
@@ -431,7 +426,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
 
                     report_suspected_repeat += '    ' + formatTime+' ' + process_OutBounds(outBounds) + \
                                                android_event_type[e[
-                                                   'EventType']] + "Related action class name is" + className + '.' + Text + '\n'
+                                                   'EventType']] + "Related action class name is " + className + '.' + Text + '\n'
                 elif refer_length < 4:
                     timeArray = time.localtime(translate_refer[tr][0]['SyscTime'] / 1000)
                     start_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
@@ -440,7 +435,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     className = re.findall('ClassName:(.+?);', translate_refer[tr][0]['Action'])[0]
                     report_suspected_repeat += '    ' + start_formatTime + ' - ' + end_formatTime +' '+ str(
                         len(translate_refer[tr])) + ' times of' + android_event_type[translate_refer[tr][0][
-                        'EventType']] + "Related action class name is" + className + '.\n'
+                        'EventType']] + "Related action class name is " + className + '.\n'
                 elif refer_length >= 4:
                     timeArray = time.localtime(translate_refer[tr][0]['SyscTime'] / 1000)
                     start_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
@@ -449,7 +444,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     className = re.findall('ClassName:(.+?);', translate_refer[tr][0]['Action'])[0]
                     report_suspected_repeat += 'Suspect bug!  ' + start_formatTime + ' - ' + end_formatTime +' '+ str(
                         len(translate_refer[tr])) + ' times of ' + android_event_type[translate_refer[tr][0][
-                        'EventType']] + "Related action class name is" + className + '.\n'
+                        'EventType']] + "Related action class name is " + className + '.\n'
             report_suspected_repeat += ' \n'
             num += 1
     suspected_test_actions_count = 0
@@ -460,7 +455,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
         if len(refer_repeat) > 1:
             for p in refer_repeat[1:]:
                 repeat += '( Sequence ' + str(p + 1)
-            repeat += ' include the same test actions.)'
+            repeat += ' contains the same test actions.)'
         translate_refer = refer[r]
         bugfind = findBugByCluster(sequence)
         complete = 0
@@ -485,7 +480,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                 report_suspected_event += '    ii.End Time： ' + time.strftime("%Y/%m/%d %H:%M:%S",
                                                                                           time.localtime(sequence[-1][
                                                                                                              'SyscTime'] / 1000)) + '\n'
-                report_suspected_event += '    iii.Description Classmark：Suspected high risk test actions.\n'
+                report_suspected_event += '    iii.Category：Suspected high risk test actions.\n'
                 report_suspected_event += '    iv.Detailed description：\n'
                 n = 0
                 pre_high_risk = translate_refer[0:highRisk[1]]
@@ -536,7 +531,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
 
                         center_report += '    ' + formatTime+' ' + process_OutBounds(outBounds) + \
                                          android_event_type[e[
-                                             'EventType']] + "Related action class name is" + className + '.' + Text + '\n'
+                                             'EventType']] + "Related action class name is " + className + '.' + Text + '\n'
                     elif refer_length < 4:
                         timeArray = time.localtime(translate_refer_center[tr][0]['SyscTime'] / 1000)
                         start_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
@@ -546,7 +541,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                         center_report += '    ' + start_formatTime + ' - ' + end_formatTime + ' ' + str(
                             len(translate_refer_center[tr])) + '  times of' + android_event_type[
                                              translate_refer_center[tr][0][
-                                                 'EventType']] + " Related action class name is" + className + '.\n'
+                                                 'EventType']] + " Related action class name is " + className + '.\n'
                     elif refer_length >= 4:
                         timeArray = time.localtime(translate_refer_center[tr][0]['SyscTime'] / 1000)
                         start_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
@@ -556,7 +551,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                         center_report += 'Suspect bug!        ' + start_formatTime + ' - ' + end_formatTime + ' ' + str(
                             len(translate_refer_center[tr])) + ' times of' + android_event_type[
                                              translate_refer_center[tr][0][
-                                                 'EventType']] + "Related action class name is" + className + '.\n'
+                                                 'EventType']] + "Related action class name is " + className + '.\n'
                 report_suspected_event += pre_report
                 report_suspected_event += '    ---------Suspected test actions start\n'
                 report_suspected_event += center_report
@@ -571,7 +566,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
         if len(refer_repeat) > 1:
             for p in refer_repeat[1:]:
                 repeat += '( Sequence ' + str(p + 1)
-            repeat += ' include the same test actions.)'
+            repeat += ' contains the same test actions.)'
         translate_refer = refer[r]
         bugfind = findBugByCluster(sequence)
         complete = 0
