@@ -29,6 +29,11 @@ class GetRemoveList(Resource):
         with open('Preprocessing/remove.json') as f:
             return json.load(f)
 
+class DicPackage(Resource):
+    def get(self):
+        with open('Preprocessing/dic_package.json') as f:
+            return json.load(f)
+
 
 class SliceEvent(Resource):
     def get(self, file_dir):
@@ -43,6 +48,7 @@ class Translate(Resource):
 api.add_resource(GetFileNames, '/GetFileNames/<path:file_dir>')
 api.add_resource(GetFileContent, '/GetFileContent/<path:file_dir>')
 api.add_resource(GetRemoveList, '/GetRemoveList/')
+api.add_resource(DicPackage, '/GetPackage/')
 api.add_resource(SliceEvent, '/SliceEvent/<path:file_dir>')
 api.add_resource(Translate, '/Translate/<path:file_dir>')
 
