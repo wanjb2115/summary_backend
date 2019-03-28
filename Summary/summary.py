@@ -83,7 +83,7 @@ for k in key:
         for s in slice_event:
             event_sequence = []
             for e in s:
-                action_class = re.findall("ClassName: (.+?);", e['Action'])[0]
+                action_class = e['Action']['ClassName']
                 event_sequence.append(android_event_type_value[e['EventType']] + android_event_class_type[action_class])
                 txt = e['EventType'], action_class, android_event_type_value[e['EventType']], android_event_class_type[
                     action_class]
@@ -130,7 +130,7 @@ for k in error_not_enough:
         for s in slice_event:
             event_sequence = []
             for e in s:
-                action_class = re.findall('ClassName: (.+?);', e['Action'])[0]
+                action_class = e['Action']['ClassName']
                 event_sequence.append(
                     android_event_type_value[e['EventType']] + android_event_class_type[action_class])
                 txt = e['EventType'], action_class, android_event_type_value[e['EventType']], android_event_class_type[

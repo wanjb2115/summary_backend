@@ -82,7 +82,7 @@ def sliceEvent(event_list):
             event_sequence = []
             for e in event_sequence_by_time_list:
                 try:
-                    action_class = re.findall("ClassName: (.+?);", e['Action'])[0]
+                    action_class = e['Action']['ClassName']
                     event_sequence.append(
                         [android_event_type_value[e['EventType']] + android_event_class_type[action_class], e])
                 except TypeError:
