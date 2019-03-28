@@ -70,7 +70,7 @@ num_all = []
 
 def makeEventFormat(event):
     event_type = event['EventType']
-    class_name = re.findall('ClassName: (.+?);', event['Action'])[0]
+    class_name = event['Action']['ClassName']
     return android_event_type_value[event_type]+android_event_class_type[class_name]
 
 def makeUpFormat(slice_event):
@@ -79,7 +79,7 @@ def makeUpFormat(slice_event):
         event_format = []
         for event in slice:
             event_type = event['EventType']
-            class_name = re.findall('ClassName: (.+?);', event['Action'])[0]
+            class_name = event['Action']['ClassName']
             event_format.append([android_event_type_value[event_type]+android_event_class_type[class_name]])
         slice_format .append(event_format)
 
@@ -123,7 +123,7 @@ def makeUpFormatBySlice(slice):
     event_format = []
     for event in slice:
         event_type = event['EventType']
-        class_name = re.findall('ClassName: (.+?);', event['Action'])[0]
+        class_name = event['Action']['ClassName']
         event_format.append([android_event_type_value[event_type]+android_event_class_type[class_name]])
 
     return event_format
@@ -163,9 +163,9 @@ def findRepeatSequence(slice_event):
         e_words = ''
         for e in slice:
             e_words += e['PackageName'] + ' ' + e['EventType'] + ' ' + \
-                       re.findall(' ClassName: (.+?); ', e['Action'])[0]
+                       e['Action']['ClassName']
             try:
-                text = re.findall(' Text: \[(.+)\]; ', e['Action'])[0]
+                text = e['Action']['Text']
                 e_words += text
             except IndexError:
                 e_words += ' '

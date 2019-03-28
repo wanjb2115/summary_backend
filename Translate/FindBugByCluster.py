@@ -14,9 +14,9 @@ def findBugByCluster(eventsequence):
     error_list = []
     for e in eventsequence:
         error_words += e['PackageName'] + ' ' + e['EventType'] + ' ' + \
-                       re.findall(' ClassName: (.+?); ', e['Action'])[0]
+                       e['Action']['ClassName']
         try:
-            text = re.findall(' Text: \[(.+)\]; ', e['Action'])[0]
+            text = e['Action']['Text']
             error_words += text
         except IndexError:
             error_words += ' '
@@ -27,10 +27,12 @@ def findBugByCluster(eventsequence):
                 for l in little:
                     e_words = ''
                     for e in l[0]:
-                        e_words += e['PackageName'] + ' ' + e['EventType'] + ' ' + \
-                                   re.findall(' ClassName: (.+?); ', e['Action'])[0]
+                        event_dict = {}
+                        for item in re.findall('(\w+): (.+?);', e['Action']):
+                            event_dict[item[0]] = item[1]
+                        e_words += e['PackageName'] + ' ' + e['EventType'] + ' ' + event_dict['ClassName']
                         try:
-                            text = re.findall(' Text: \[(.+)\]; ', e['Action'])[0]
+                            text = event_dict['Text']
                             e_words += text
                         except IndexError:
                             e_words += ' '
