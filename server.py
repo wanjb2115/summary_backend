@@ -44,8 +44,6 @@ class Translate(Resource):
     def get(self, file_dir):
         return translate(file_dir)
 
-print(translate('com.example.myfristandroid/695_1'))
-exit()
 api.add_resource(GetFileNames, '/GetFileNames/<path:file_dir>')
 api.add_resource(GetFileContent, '/GetFileContent/<path:file_dir>')
 api.add_resource(GetRemoveList, '/GetRemoveList/')
