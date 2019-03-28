@@ -219,7 +219,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                         report_confirmed += '    ' + formatTime + ' The user enter the main application.' + '\n'
                         continue
                     className = e['Action']['ClassName']
-                    Text = re.findall('Text:(.+?);', e['Action'])[0]
+                    Text = e['Action']['Text']
                     Text = Text.replace('[', '')
                     Text = Text.replace(']', '')
 
@@ -330,7 +330,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                         report_high_risk += '    ' + formatTime + '， The user enter the main application.\n'
                         continue
                     className = e['Action']['ClassName']
-                    Text = re.findall('Text:(.+?);', e['Action'])[0]
+                    Text = e['Action']['Text']
                     Text = Text.replace('[', '')
                     Text = Text.replace(']', '')
 
@@ -415,7 +415,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                         report_suspected_repeat += '    ' + formatTime + ' The user enter the main application.' + '\n'
                         continue
                     className = e['Action']['ClassName']
-                    Text = re.findall('Text:(.+?);', e['Action'])[0]
+                    Text = e['Action']['Text']
                     Text = Text.replace('[', '')
                     Text = Text.replace(']', '')
 
@@ -520,7 +520,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                             center_report += '    ' + formatTime + ' ' + 'The user enter the main application.\n'
                             continue
                         className = e['Action']['ClassName']
-                        Text = re.findall('Text:(.+?);', e['Action'])[0]
+                        Text = e['Action']['Text']
                         Text = Text.replace('[', '')
                         Text = Text.replace(']', '')
 
