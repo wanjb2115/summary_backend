@@ -147,3 +147,4 @@ def sliceEvent(file_dir):
 
     slice_event = [x for x in littleList if len(x) >= 2 and len(x) <= 38]
     return {'data': slice_event}
+

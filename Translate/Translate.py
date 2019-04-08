@@ -110,6 +110,11 @@ def highSummary(sequence):
 def goTranslate(file_name, event_list, slice_event, logcat_list):
     complete_whole = 0
     high_risk_whole = 0
+    complete_whole_list = []
+    high_risk_whole_list = []
+    suspected_whole_list = []
+    suspected_test_actions_list = []
+    normal_list = []
 
     report_overall = '''
         Test person：person_name
@@ -187,6 +192,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                 complete += 1
                 errorText = errorIntro[bugfind[1]]
         if complete != 0:
+            complete_whole_list.append(str(refer_repeat[0] + 1))
             report_confirmed += '  ' + str(num + 1) + '.Sequence ' + str(
                 refer_repeat[0] + 1) + ' of events: ' + repeat + '\n'
 
@@ -293,6 +299,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                 high_risk += 1
                 errorText = errorIntro[bugfind[1]]
         if high_risk != 0:
+            high_risk_whole_list.append(str(refer_repeat[0] + 1))
             report_high_risk += '  ' + str(num + 1) + '.Sequence ' + str(
                 refer_repeat[0] + 1) + ' of events: ' + repeat + '\n'
 
@@ -378,6 +385,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
         suspected = theCountOfRepeatEventBySlice(summaryByRepeatBySlice(makeUpFormatBySlice(sequence)))
 
         if suspected != 0:
+            suspected_whole_list.append(str(refer_repeat[0] + 1))
             report_suspected_repeat += '  ' + str(num + 1) + '.Sequence ' + str(
                 refer_repeat[0] + 1) + ' of events: ' + repeat + '\n'
 
@@ -470,6 +478,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
         if suspected + high_risk + complete == 0:
             highRisk = highRiskEventTranslate(translate_refer)
             if highRisk:
+                suspected_test_actions_list.append(str(refer_repeat[0] + 1))
                 suspected_test_actions_count += 1
                 report_suspected_event += '  ' + str(num + 1) + '.Sequence ' + str(
                     refer_repeat[0] + 1) + ' of events: ' + repeat + '\n'
@@ -579,6 +588,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
             else:
                 high_risk += 1
         if suspected + high_risk + complete == 0 and not highRiskEventTranslate(translate_refer):
+            normal_list.append(str(refer_repeat[0] + 1))
             report_pre = '  ' + str(num + 1) + '.Sequence ' + str(
                 refer_repeat[0] + 1) + ' of events: ' + repeat + '\n'
             report = highSummary(sequence)
@@ -597,6 +607,11 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
         'suspected_bug': suspected_whole,
         'suspected_test_actions': suspected_test_actions_count,
         'normal_count': normal_count,
+        'confirmed_bug_list': complete_whole_list,
+        'high_risk_list': high_risk_whole_list,
+        'suspected_bug_list': suspected_whole_list,
+        'suspected_test_actions_list': suspected_test_actions_list,
+        'normal_count_list': normal_list,
         'confirmed_report': report_confirmed,
         'high_risk_report': report_high_risk,
         'suspected_bug_report': report_suspected_repeat,
