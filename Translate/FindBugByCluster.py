@@ -39,7 +39,7 @@ def findBugByCluster(eventsequence):
                             pass
 
                     sim = Levenshtein.ratio(e_words, error_words)
-                    if sim > 0.98:
+                    if sim > 0.80:
                         error_list.append([sim*l[1], key, l[0], l[1]])
     error_list = sorted(error_list, key=lambda x: x[0], reverse=True)
     if len(error_list) >= 1:

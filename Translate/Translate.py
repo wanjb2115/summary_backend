@@ -126,7 +126,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
             The following is detailed summary of the segmented event sequence. 
         Test report：
             '''
-    person_name = re.findall('\d+_\d+',file_name)[0]
+    person_name = re.findall('\d+_\d+', file_name)[0]
     software_name = event_list[0]['PackageName']
     test_time = str((event_list[-1]['SyscTime'] - event_list[0]['SyscTime']) / 1000)
     event_count = str(len(event_list))
@@ -142,13 +142,13 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
     repeat_sequence_count = sequence_count - sequence_norepeat_count
     for sequence in slice_event:
         bugfind = findBugByCluster(sequence)
-        if bugfind:
-            if bugfind[0] == 1.0:
-                complete_whole += 1
-                errorText = errorIntro[bugfind[1]]
-            else:
-                high_risk_whole += 1
-                errorText = errorIntro[bugfind[1]]
+        confirmed_find = find_confirmed(sequence, logcat_list)
+        if find_confirmed(sequence, logcat_list):
+            complete_whole += 1
+        elif bugfind:
+
+            high_risk_whole += 1
+            errorText = errorIntro[bugfind[1]]
 
     suspected = theCountOfRepeatEvent(summaryByRepeat(makeUpFormat(slice_event)))
 
@@ -183,25 +183,23 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                 repeat += '( Sequence ' + str(p + 1)
             repeat += ' contains the same test actions.)'
         translate_refer = refer[r]
+
         bugfind = findBugByCluster(sequence)
+        confirmed_find = find_confirmed(sequence, logcat_list)
         complete = 0
         suspected = theCountOfRepeatEventBySlice(summaryByRepeatBySlice(makeUpFormatBySlice(sequence)))
 
-        if bugfind:
-            if bugfind[0] == 1.0:
-                complete += 1
-                errorText = errorIntro[bugfind[1]]
-        if complete != 0:
+        if confirmed_find:
             complete_whole_list.append(str(refer_repeat[0] + 1))
             report_confirmed += '  ' + str(num + 1) + '.Sequence ' + str(
                 refer_repeat[0] + 1) + ' of events: ' + repeat + '\n'
 
             report_confirmed += '    i.Start time：' + time.strftime("%Y/%m/%d %H:%M:%S",
-                                                                                time.localtime(sequence[0][
-                                                                                                   'SyscTime'] / 1000)) + '\n'
+                                                                    time.localtime(sequence[0][
+                                                                                       'SyscTime'] / 1000)) + '\n'
             report_confirmed += '    ii.End Time： ' + time.strftime("%Y/%m/%d %H:%M:%S",
-                                                                                time.localtime(sequence[-1][
-                                                                                                   'SyscTime'] / 1000)) + '\n'
+                                                                    time.localtime(sequence[-1][
+                                                                                       'SyscTime'] / 1000)) + '\n'
             report_confirmed += '    iii.Category：Confirmed bug!\n'
             report_confirmed += '    iv.Detailed description：\n'
             n = 0
@@ -230,11 +228,11 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     Text = Text.replace(']', '')
 
                     if len(Text) > 1:
-                        Text = "The text is" + Text + '.'
+                        Text = "The text is " + Text + '.'
                     else:
                         Text = ''
 
-                    report_confirmed += '    ' + formatTime + ' ' + process_OutBounds(outBounds) +', '+  \
+                    report_confirmed += '    ' + formatTime + ' ' + process_OutBounds(outBounds) + ', ' + \
                                         android_event_type[e[
                                             'EventType']] + "Related class name is " + className + '.' + Text + '\n'
                 elif refer_length < 4:
@@ -243,7 +241,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     timeArray = time.localtime(translate_refer[tr][-1]['SyscTime'] / 1000)
                     end_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
                     className = translate_refer[tr][0]['Action']['ClassName']
-                    report_confirmed += '    ' + start_formatTime + ' - ' + end_formatTime +' '+ str(
+                    report_confirmed += '    ' + start_formatTime + ' - ' + end_formatTime + ' ' + str(
                         len(translate_refer[tr])) + ' times of' + android_event_type[translate_refer[tr][0][
                         'EventType']] + "Related class name is " + className + '.\n'
                 elif refer_length >= 4:
@@ -252,17 +250,17 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     timeArray = time.localtime(translate_refer[tr][-1]['SyscTime'] / 1000)
                     end_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
                     className = translate_refer[tr][0]['Action']['ClassName']
-                    report_confirmed += 'Suspect bug!        ' + start_formatTime + ' - ' + end_formatTime +' '+ str(
+                    report_confirmed += 'Suspect bug!        ' + start_formatTime + ' - ' + end_formatTime + ' ' + str(
                         len(translate_refer[tr])) + ' times of' + android_event_type[translate_refer[tr][0][
                         'EventType']] + "Related class name is " + className + '.\n'
-            if complete == 1:
+            if confirmed_find:
                 report_confirmed += 'Confirmed bug!  -----Confirmed bug logcat information:\n'
                 start_time = sequence[0]['SyscTime']
                 end_time = sequence[-1]['SyscTime']
                 logcat_error_log = {}
 
                 for l in logcat_list:
-                    if int(l['SyscTime']) >= int(start_time) and int(l['SyscTime']) <= int(end_time)+1000 and l[
+                    if int(l['SyscTime']) >= int(start_time) and int(l['SyscTime']) <= int(end_time) + 1000 and l[
                         'priority'] == 'E':
                         if l['message'] not in logcat_error_log:
                             logcat_error_log[l['message']] = {}
@@ -291,24 +289,25 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
             repeat += ' contains the same test actions.)'
         translate_refer = refer[r]
         bugfind = findBugByCluster(sequence)
+        confirmed_find = find_confirmed(sequence, logcat_list)
         high_risk = 0
         if bugfind:
-            if bugfind[0] == 1.0:
+            if bugfind[0] == 0.95:
                 pass
             else:
                 high_risk += 1
                 errorText = errorIntro[bugfind[1]]
-        if high_risk != 0:
+        if high_risk != 0 and not confirmed_find:
             high_risk_whole_list.append(str(refer_repeat[0] + 1))
             report_high_risk += '  ' + str(num + 1) + '.Sequence ' + str(
                 refer_repeat[0] + 1) + ' of events: ' + repeat + '\n'
 
             report_high_risk += '    i.Start time：' + time.strftime("%Y/%m/%d %H:%M:%S",
-                                                                                time.localtime(sequence[0][
-                                                                                                   'SyscTime'] / 1000)) + '\n'
+                                                                    time.localtime(sequence[0][
+                                                                                       'SyscTime'] / 1000)) + '\n'
             report_high_risk += '    ii.End Time： ' + time.strftime("%Y/%m/%d %H:%M:%S",
-                                                                                time.localtime(sequence[-1][
-                                                                                                   'SyscTime'] / 1000)) + '\n'
+                                                                    time.localtime(sequence[-1][
+                                                                                       'SyscTime'] / 1000)) + '\n'
             report_high_risk += '    iii.Category：High-risk bug!\n'
             if high_risk != 0:
                 report_high_risk += '%.2f' % (float(bugfind[
@@ -342,11 +341,11 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     Text = Text.replace(']', '')
 
                     if len(Text) > 1:
-                        Text = "The text is" + Text + '.'
+                        Text = "The text is " + Text + '.'
                     else:
                         Text = ''
 
-                    report_high_risk += '    ' + formatTime+' ' + process_OutBounds(outBounds) +', '+  \
+                    report_high_risk += '    ' + formatTime + ' ' + process_OutBounds(outBounds) + ', ' + \
                                         android_event_type[e[
                                             'EventType']] + "Related class name is " + className + '.' + Text + '\n'
                 elif refer_length < 4:
@@ -355,7 +354,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     timeArray = time.localtime(translate_refer[tr][-1]['SyscTime'] / 1000)
                     end_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
                     className = translate_refer[tr][0]['Action']['ClassName']
-                    report_high_risk += '    ' + start_formatTime + ' - ' + end_formatTime +' '+ str(
+                    report_high_risk += '    ' + start_formatTime + ' - ' + end_formatTime + ' ' + str(
                         len(translate_refer[tr])) + ' times of ' + android_event_type[translate_refer[tr][0][
                         'EventType']] + "Related class name is " + className + '.\n'
                 elif refer_length >= 4:
@@ -364,7 +363,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     timeArray = time.localtime(translate_refer[tr][-1]['SyscTime'] / 1000)
                     end_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
                     className = translate_refer[tr][0]['Action']['ClassName']
-                    report_high_risk += 'Suspect bug!  ' + start_formatTime + ' - ' + end_formatTime+' ' +str(
+                    report_high_risk += 'Suspect bug!  ' + start_formatTime + ' - ' + end_formatTime + ' ' + str(
                         len(translate_refer[tr])) + ' times of ' + android_event_type[translate_refer[tr][0][
                         'EventType']] + "Related class name is " + className + '.\n'
             report_high_risk += ' \n'
@@ -381,20 +380,21 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
             repeat += ' contains the same test actions.)'
         translate_refer = refer[r]
         bugfind = findBugByCluster(sequence)
+        confirmed_find = find_confirmed(sequence, logcat_list)
         high_risk = 0
         suspected = theCountOfRepeatEventBySlice(summaryByRepeatBySlice(makeUpFormatBySlice(sequence)))
 
-        if suspected != 0:
+        if suspected != 0 and not confirmed_find:
             suspected_whole_list.append(str(refer_repeat[0] + 1))
             report_suspected_repeat += '  ' + str(num + 1) + '.Sequence ' + str(
                 refer_repeat[0] + 1) + ' of events: ' + repeat + '\n'
 
             report_suspected_repeat += '    i.Start time：' + time.strftime("%Y/%m/%d %H:%M:%S",
-                                                                                       time.localtime(sequence[0][
-                                                                                                          'SyscTime'] / 1000)) + '\n'
+                                                                           time.localtime(sequence[0][
+                                                                                              'SyscTime'] / 1000)) + '\n'
             report_suspected_repeat += '    ii.End Time： ' + time.strftime("%Y/%m/%d %H:%M:%S",
-                                                                                       time.localtime(sequence[-1][
-                                                                                                          'SyscTime'] / 1000)) + '\n'
+                                                                           time.localtime(sequence[-1][
+                                                                                              'SyscTime'] / 1000)) + '\n'
             report_suspected_repeat += '    iii.Category：Suspected bug!' + '\n'
             if high_risk != 0:
                 report_suspected_repeat += '%.2f' % (float(bugfind[
@@ -428,11 +428,11 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     Text = Text.replace(']', '')
 
                     if len(Text) > 1:
-                        Text = "The text is" + Text + '.'
+                        Text = "The text is " + Text + '.'
                     else:
                         Text = ''
 
-                    report_suspected_repeat += '    ' + formatTime+' ' + process_OutBounds(outBounds) +', '+  \
+                    report_suspected_repeat += '    ' + formatTime + ' ' + process_OutBounds(outBounds) + ', ' + \
                                                android_event_type[e[
                                                    'EventType']] + "Related class name is " + className + '.' + Text + '\n'
                 elif refer_length < 4:
@@ -441,7 +441,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     timeArray = time.localtime(translate_refer[tr][-1]['SyscTime'] / 1000)
                     end_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
                     className = translate_refer[tr][0]['Action']['ClassName']
-                    report_suspected_repeat += '    ' + start_formatTime + ' - ' + end_formatTime +' '+ str(
+                    report_suspected_repeat += '    ' + start_formatTime + ' - ' + end_formatTime + ' ' + str(
                         len(translate_refer[tr])) + ' times of' + android_event_type[translate_refer[tr][0][
                         'EventType']] + "Related class name is " + className + '.\n'
                 elif refer_length >= 4:
@@ -450,7 +450,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     timeArray = time.localtime(translate_refer[tr][-1]['SyscTime'] / 1000)
                     end_formatTime = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
                     className = translate_refer[tr][0]['Action']['ClassName']
-                    report_suspected_repeat += 'Suspect bug!  ' + start_formatTime + ' - ' + end_formatTime +' '+ str(
+                    report_suspected_repeat += 'Suspect bug!  ' + start_formatTime + ' - ' + end_formatTime + ' ' + str(
                         len(translate_refer[tr])) + ' times of ' + android_event_type[translate_refer[tr][0][
                         'EventType']] + "Related class name is " + className + '.\n'
             report_suspected_repeat += ' \n'
@@ -466,6 +466,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
             repeat += ' contains the same test actions.)'
         translate_refer = refer[r]
         bugfind = findBugByCluster(sequence)
+        confirmed_find = find_confirmed(sequence, logcat_list)
         complete = 0
         high_risk = 0
         suspected = theCountOfRepeatEventBySlice(summaryByRepeatBySlice(makeUpFormatBySlice(sequence)))
@@ -475,7 +476,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                 complete += 1
             else:
                 high_risk += 1
-        if suspected + high_risk + complete == 0:
+        if suspected + high_risk + complete == 0 and not confirmed_find:
             highRisk = highRiskEventTranslate(translate_refer)
             if highRisk:
                 suspected_test_actions_list.append(str(refer_repeat[0] + 1))
@@ -484,11 +485,11 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                     refer_repeat[0] + 1) + ' of events: ' + repeat + '\n'
 
                 report_suspected_event += '    i.Start time：' + time.strftime("%Y/%m/%d %H:%M:%S",
-                                                                                          time.localtime(sequence[0][
-                                                                                                             'SyscTime'] / 1000)) + '\n'
+                                                                              time.localtime(sequence[0][
+                                                                                                 'SyscTime'] / 1000)) + '\n'
                 report_suspected_event += '    ii.End Time： ' + time.strftime("%Y/%m/%d %H:%M:%S",
-                                                                                          time.localtime(sequence[-1][
-                                                                                                             'SyscTime'] / 1000)) + '\n'
+                                                                              time.localtime(sequence[-1][
+                                                                                                 'SyscTime'] / 1000)) + '\n'
                 report_suspected_event += '    iii.Category：Suspected high risk test actions.\n'
                 report_suspected_event += '    iv.Detailed description：\n'
                 n = 0
@@ -534,11 +535,11 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                         Text = Text.replace(']', '')
 
                         if len(Text) > 1:
-                            Text = "The text is" + Text + '.'
+                            Text = "The text is " + Text + '.'
                         else:
                             Text = ''
 
-                        center_report += '    ' + formatTime+' ' + process_OutBounds(outBounds) +', '+  \
+                        center_report += '    ' + formatTime + ' ' + process_OutBounds(outBounds) + ', ' + \
                                          android_event_type[e[
                                              'EventType']] + "Related class name is " + className + '.' + Text + '\n'
                     elif refer_length < 4:
@@ -578,6 +579,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
             repeat += ' contains the same test actions.)'
         translate_refer = refer[r]
         bugfind = findBugByCluster(sequence)
+        confirmed_find = find_confirmed(sequence, logcat_list)
         complete = 0
         high_risk = 0
         suspected = theCountOfRepeatEventBySlice(summaryByRepeatBySlice(makeUpFormatBySlice(sequence)))
@@ -587,7 +589,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
                 complete += 1
             else:
                 high_risk += 1
-        if suspected + high_risk + complete == 0 and not highRiskEventTranslate(translate_refer):
+        if suspected + high_risk + complete == 0 and not highRiskEventTranslate(translate_refer) and not confirmed_find:
             normal_list.append(str(refer_repeat[0] + 1))
             report_pre = '  ' + str(num + 1) + '.Sequence ' + str(
                 refer_repeat[0] + 1) + ' of events: ' + repeat + '\n'
@@ -625,6 +627,16 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
     # print(report_suspected_repeat)
     # print(report_suspected_event)
     # print(report_normal)
+
+
+def find_confirmed(sequence, logcatlist):
+    start_time = sequence[0]['SyscTime']
+    end_time = sequence[-1]['SyscTime']
+    for logcat in logcatlist:
+        if logcat['priority'] == 'E' and logcat['SyscTime'] > start_time and logcat['SyscTime'] < end_time + 1000:
+            return 1
+
+    return 0
 
 
 def translate(file_name):
