@@ -146,7 +146,6 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
         if find_confirmed(sequence, logcat_list):
             complete_whole += 1
         elif bugfind:
-
             high_risk_whole += 1
             errorText = errorIntro[bugfind[1]]
 
@@ -162,7 +161,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
     report_overall = report_overall.replace('complete_count', str(complete_whole))
     report_overall = report_overall.replace('high_risk_count', str(high_risk_whole))
     report_overall = report_overall.replace('suspected_count', str(suspected))
-    suspected_whole = suspected
+    suspected_whole = 0
 
     report_confirmed = ''
     report_high_risk = ''
@@ -385,6 +384,7 @@ def goTranslate(file_name, event_list, slice_event, logcat_list):
         suspected = theCountOfRepeatEventBySlice(summaryByRepeatBySlice(makeUpFormatBySlice(sequence)))
 
         if suspected != 0 and not confirmed_find:
+            suspected_whole += 1
             suspected_whole_list.append(str(refer_repeat[0] + 1))
             report_suspected_repeat += '  ' + str(num + 1) + '.Sequence ' + str(
                 refer_repeat[0] + 1) + ' of events: ' + repeat + '\n'
